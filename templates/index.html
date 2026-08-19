@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Validator</title>
+    
+    <!-- Google Fonts for typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --background: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #1f2937;
+            --text-secondary: #6b7280;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        /* Header Styling */
+        header {
+            width: 100%;
+            background-color: var(--surface);
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        header h1 i {
+            margin-right: 10px;
+        }
+
+        /* Main Container Container */
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .instructions {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .instructions h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Form & Input Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Result Box Styling */
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-real {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid #a7f3d0;
+        }
+
+        .result-fake {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid #fecaca;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 30px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 20px;
+                width: 95%;
+            }
+            textarea {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-shield-halved"></i> AI News Validator</h1>
+    </header>
+
+    <main class="main-container">
+        <div class="instructions">
+            <h2>Verify the Authenticity of News</h2>
+            <p>Paste a news statement, headline, or excerpt into the box below. Our trained Machine Learning model will analyze the text using Natural Language Processing and Logistic Regression to determine its validity.</p>
+        </div>
+
+        <!-- The Action connects to your app.py Flask route -->
+        <form action="/predict" method="POST" id="prediction-form">
+            <textarea name="news_text" placeholder="Enter the news text you want to verify..." required>{{ original_text if original_text else '' }}</textarea>
+            
+            <button type="submit" class="btn-submit" id="submit-btn">
+                <span id="btn-text">Analyze Statement</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </form>
+
+        <!-- Conditional rendering based on Flask output -->
+        {% if prediction_text %}
+            <div class="result-box {% if 'Real' in prediction_text %}result-real{% else %}result-fake{% endif %}">
+                {% if 'Real' in prediction_text %}
+                    <i class="fa-solid fa-circle-check"></i> 
+                {% else %}
+                    <i class="fa-solid fa-triangle-exclamation"></i> 
+                {% endif %}
+                {{ prediction_text }}
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>Built with Flask, Scikit-Learn & TF-IDF Vectorization</p>
+    </footer>
+
+    <!-- Simple JS to show loading spinner when button is clicked -->
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function() {
+            document.getElementById('btn-text').innerText = 'Analyzing...';
+            document.getElementById('spinner').style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
